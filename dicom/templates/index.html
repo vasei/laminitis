@@ -1,0 +1,134 @@
+<headers>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="../../static/node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <script type="text/javascript" src="../../static/node_modules/i18next/i18next.min.js"></script>
+    <script type="text/javascript"
+            src="../../static/node_modules/i18next-xhr-backend/i18nextXHRBackend.min.js"></script>
+    <script type="text/javascript"
+            src="../../static/node_modules/i18next-browser-languagedetector/i18nextBrowserLanguageDetector.min.js"></script>
+    <script type="text/javascript" src="../../static/node_modules/jszip/dist/jszip.min.js"></script>
+    <script type="text/javascript" src="../../static/node_modules/konva/konva.min.js"></script>
+    <script type="text/javascript" src="../../static/node_modules/magic-wand-js/js/magic-wand-min.js"></script>
+    <!-- Third party (viewer) -->
+    <script type="text/javascript" src="../../static/node_modules/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="../../static/node_modules/nprogress/nprogress.js"></script>
+
+    <!-- decoders -->
+    <script type="text/javascript" src="./js/rle.js"></script>
+    <script type="text/javascript" src="./js/jpx.js"></script>
+    <script type="text/javascript" src="./js/util.js"></script>
+    <script type="text/javascript" src="./js/arithmetic_decoder.js"></script>
+    <script type="text/javascript" src="./js/jpg.js"></script>
+    <script type="text/javascript"
+            src="../../static/node_modules/jpeg-lossless-decoder-js/release/current/lossless-min.js"></script>
+    <!-- dwv -->
+    <script type="text/javascript" src="../../static/node_modules/dwv/dist/dwv.min.js"></script>
+
+    {#    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>#}
+    {#    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>#}
+    <style>
+        html, body {
+
+        }
+
+        #dwv {
+            height: 70%;
+            width: 80%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 20px;
+
+            background-color: black;
+        }
+
+        .layerContainer {
+            position: relative;
+            padding: 0;
+            margin: auto;
+        }
+
+        .imageLayer {
+            position: absolute;
+
+        }
+
+        .drawDiv {
+            position: absolute;
+
+        }
+
+        #abzar {
+            margin-left: auto;
+            margin-right: auto;
+            background-color: rgba(177, 179, 179, 0.55);
+            height: 80px;
+            width: 80%;
+            margin-bottom: 40px;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            text-align: center;
+            padding-top: 10px;
+
+        }
+    </style>
+</headers>
+<body>
+
+<div class="header">
+    <div class="toolbar">
+        <a href="{% url 'about' %}">About This Site</a>
+    </div>
+</div>
+
+<div id="dwv">
+    <div class="layerContainer">
+        <canvas class="imageLayer"></canvas>
+        <div class="drawDiv">
+            <div class="konvajs-content" role="presentation">
+                </canvas></div>
+        </div>
+    </div>
+</div>
+<div id="abzar">
+    <div>
+        <button type="button" class="btn btn-default" onclick="set('Arrow')">Arrow</button>
+        <button type="button" class="btn btn-default" onclick="set('Ruler')">Ruler</button>
+        <button type="button" class="btn btn-default" onclick="set('Protractor')">Protractor</button>
+        <button type="button" class="btn btn-default" onclick="set('Rectangle')">Rectangle</button>
+        <button type="button" class="btn btn-default" onclick="set('Roi')">Roi</button>
+        <button type="button" class="btn btn-default" onclick="set('Ellipse')">Ellipse</button>
+        <button type="button" class="btn btn-default" onclick="set('FreeHand')">FreeHand</button>
+
+    </div>
+</div>
+</body>
+
+<script>
+    // base function to get elements
+    dwv.gui.getElement = dwv.gui.base.getElement;
+    dwv.gui.displayProgress = function (percent) {
+    };
+
+    // create the dwv app
+    var app = new dwv.App();
+    // initialise with the id of the container div
+    var options = {
+        "containerDivId": "dwv",
+        "tools": ["Draw"],
+        "shapes": ["Ruler"],
+    };
+    app.init(options);
+    // load dicom data
+    {% load static %}
+    app.loadURLs(["{% static "images/example/bbmri-53323131.dcm" %}"]);
+
+    function set(TempShape) {
+        var options = {
+            "containerDivId": "dwv",
+            "tools": ["Draw"],
+            "shapes": [TempShape],
+        };
+        app.init(options);
+        app.loadURLs(["{% static "images/example/bbmri-53323131.dcm" %}"]);
+    }
+</script>
